@@ -7,17 +7,17 @@
                 </template>
                 <span>首页</span>
             </tabbar-item>
-            <tabbar-item to="/release">
+            <tabbar-item to="/social">
                 <template #icon="props">
-                    <img class="icon-img" :src="props.active ? require('../../assets/icon-home-tab-2-active.png') : require('../../assets/icon-home-tab-3.png')" />
+                    <img class="icon-img" :src="props.active ? require('../../assets/icon-home-tab-2-active.png') : require('../../assets/icon-home-tab-2.png')" />
                 </template>
-                <span>我要发钱</span>
+                <span>圈子</span>
             </tabbar-item>
-            <tabbar-item to="/bounty-list">
+            <tabbar-item to="/order-list">
                 <template #icon="props">
                     <img class="icon-img" :src="props.active ? require('../../assets/icon-home-tab-3-active.png') : require('../../assets/icon-home-tab-3.png')" />
                 </template>
-                <span>我要赚钱</span>
+                <span>订单</span>
             </tabbar-item>
             <tabbar-item to="/my">
                 <template #icon="props">
@@ -55,20 +55,20 @@ export default {
     }
     .van-tabbar-item__text {
         position: relative;
-        top: -15px;
+        top: 10px;
         font-size: 22px;
-        color: #acb0b7;
+        color: #333333;
     }
     .van-tabbar-item--active {
         .van-tabbar-item__text {
-            color: #ff7840;
+            color: #355AAF;
         }
     }
 }
 </style>
 <style lang="scss" scoped>
 .icon-img {
-    width: 96px;
-    height: 96px;
+    max-width: 60px;
+    max-height: 60px;
 }
 </style>

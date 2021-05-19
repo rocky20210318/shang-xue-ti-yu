@@ -2,7 +2,7 @@ import axios from 'axios'
 import { Toast } from 'vant'
 const qs = require('qs')
 const instance = axios.create({
-    baseURL: 'http://47.106.209.243:18081'
+    baseURL: '/api'
 })
 const api = {
     async get (url, data, isHideToast = false) {
@@ -10,11 +10,11 @@ const api = {
             let res = await instance.get(url, { params: data })
             res = res.data
             return new Promise((resolve) => {
-                if (res.status === 'SUCCESS') {
+                if (res.code === '1') {
                     resolve(res.data)
                 } else {
                     if (!isHideToast) Toast(res.message || res.data)
-                    throw res.message || res.data
+                    throw res.msg || res.data
                 }
             })
         } catch (err) {
@@ -26,11 +26,11 @@ const api = {
             let res = await instance.post(url, qs.stringify(data))
             res = res.data
             return new Promise((resolve, reject) => {
-                if (res.status === 'SUCCESS') {
+                if (res.code === '1') {
                     resolve(res.data)
                 } else {
                     if (!isHideToast) Toast(res.message || res.data)
-                    throw res.message || res.data
+                    throw res.msg || res.data
                 }
             })
         } catch (err) {

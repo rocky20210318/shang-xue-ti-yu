@@ -8,6 +8,7 @@
 </template>
 
 <script>
+// import { getVenueList } from './services'
 
 export default {
     name: 'app',
@@ -30,6 +31,7 @@ export default {
         }
     },
     async created () {
+        // console.log(await getVenueList())
     },
     mounted () {
     },

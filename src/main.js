@@ -6,7 +6,7 @@ import VueGlobal from './vue-global'
 import 'lib-flexible'
 import { api } from './utils/api'
 import { isPC } from './utils/index'
-import { Row, Col, Icon, NavBar } from 'vant'
+import { Row, Col, Icon, NavBar, Lazyload, Image } from 'vant'
 import AV from 'leancloud-storage'
 
 if (isPC && document.documentElement.clientWidth > 450) {
@@ -19,8 +19,8 @@ if (isPC && document.documentElement.clientWidth > 450) {
     document.body.appendChild(ifrm)
 } else {
     AV.init({
-        appId: 'EHKPcYGO06gIzS6uoxHtPltQ-MdYXbMMI',
-        appKey: 'N6nsVk6x2axf2MD2thDcoJbn'
+        appId: 'SWgnll1udFQAXIJsRRjcPUCy-MdYXbMMI',
+        appKey: 'eRjkKB69gE1byBHW5ecDFUjU'
         // serverURLs: 'https://aliasapi.luckms.com'
     })
 
@@ -35,6 +35,8 @@ if (isPC && document.documentElement.clientWidth > 450) {
     Vue.use(Col)
     Vue.use(Icon)
     Vue.use(NavBar)
+    Vue.use(Lazyload)
+    Vue.use(Image)
 
     window.vueApp = new Vue({
         router,
