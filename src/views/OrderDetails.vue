@@ -5,17 +5,16 @@
             <p class="title">场地信息</p>
             <van-row type="flex" align="center" class="row">
                 <p class="label">项目：</p>
-                <p class="text">篮球</p>
+                <p class="text">{{ typeName }}</p>
             </van-row>
             <van-row type="flex" align="center" class="row">
                 <p class="label">日期：</p>
-                <p class="text">篮球</p>
+                <p class="text">{{ orderDetails.orderAt }}</p>
             </van-row>
             <van-row type="flex" align="top" class="row">
                 <p class="label">场次：</p>
                 <div class="text">
-                    <p>篮球</p>
-                    <p>篮球</p>
+                    <p v-for="item in orderDetails.activeList" :key="item.time + item.venue">{{ item.venue + ' ' + item.time}}</p>
                 </div>
             </van-row>
         </div>
@@ -30,18 +29,21 @@
                 <Field v-model="name" placeholder="请输入联系人" />
             </van-row>
         </div>
+        <!-- <p class="prompt">预订成功后不接受退改</p> -->
         <div class="footer">
             <van-row type="flex" justify="space-between" align="center" class="order">
-                <p class="amount"><span>￥0</span></p>
-                <Button type="primary" hairline round color="linear-gradient(147deg, #FF9313 0%, #FF6600 100%)" class="button">立即支付</Button>
+                <p class="amount"><span>￥{{ total }}</span></p>
+                <Button type="primary" hairline round :loading="isButtinLoading" loading-text="支付中" color="linear-gradient(147deg, #FF9313 0%, #FF6600 100%)" class="button" @click="pay">立即支付</Button>
             </van-row>
         </div>
     </div>
 </template>
 
 <script>
-// import { getDateStr } from '../services'
-import { Button, Field } from 'vant'
+import typeList from '../json/sports-category'
+import { getOrder } from '../services'
+import { Button, Field, Dialog } from 'vant'
+import AV from 'leancloud-storage'
 
 export default {
     name: 'order-details',
@@ -50,18 +52,63 @@ export default {
         Field
     },
     data () {
+        const id = this.$route.params.id
         return {
-            phone: '',
-            name: ''
+            isButtinLoading: false,
+            phone: AV.User.current().get('mobilePhoneNumber'),
+            name: '',
+            id: id,
+            orderDetails: getOrder(id)
         }
     },
     computed: {
+        typeName () {
+            console.log(this.orderDetails.category_id)
+            const data = typeList.filter(i => i.value + '' === this.orderDetails.category_id)
+            // console.log(data)
+            return data[0].text
+        },
+        total () {
+            return this.orderDetails.price * this.orderDetails.activeList.length
+        }
     },
     async created () {
+        this.getOrder()
     },
     mounted () {
     },
     methods: {
+        getOrder () {
+            this.orderDetails = getOrder(this.id)
+            // console.log(this.orderDetails)
+        },
+        pay () {
+            const PHONE_EXP = /^(((13[0-9])|(14[5-7])|(15[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))+\d{8})$/
+            if (this.phone !== '') {
+                if (!PHONE_EXP.test(this.phone)) {
+                    this.$toast('手机号格式不正确')
+                    return false
+                }
+            } else {
+                this.$toast('请输入联系手机号')
+                return false
+            }
+            if (this.name === '') {
+                this.$toast('请输入联系人姓名')
+                return false
+            }
+            Dialog.confirm({
+                title: '提示',
+                message: '预订成功后不接受退改。'
+            }).then(() => {
+                this.isButtinLoading = true
+                setTimeout(() => {
+                    this.$router.push('/credit-card')
+                }, 1500)
+            }).catch(() => {
+                // on cancel
+            })
+        }
     }
 }
 </script>

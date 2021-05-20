@@ -56,6 +56,12 @@ const routes = [
         beforeEnter: authFilter
     },
     {
+        path: '/credit-card',
+        name: 'CreditCard',
+        component: () => import('../views/CreditCard.vue'),
+        beforeEnter: authFilter
+    },
+    {
         path: '/password-reset',
         name: 'PasswordReset',
         component: () => import('../views/PasswordReset.vue')

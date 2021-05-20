@@ -166,6 +166,7 @@ export async function cancelWatch (userId) {
 export function setStadiumDetails (data) {
     localStorage.setItem('stadiumDetails', JSON.stringify(data))
 }
+
 // 获取体育馆详情页信息
 export function getStadiumDetails () {
     const stadiumDetails = localStorage.getItem('stadiumDetails')
@@ -192,6 +193,28 @@ export function getDateStr () {
         // console.log(i)
         time.push(GetDateStr(i))
     }
-    // console.log(time)
     return time
+}
+
+// 创建订单
+export function addOrder (data) {
+    const userId = AV.User.current().id
+    const orderList = getOrderList()
+    orderList.push(data)
+    localStorage.setItem('order-' + userId, JSON.stringify(orderList))
+}
+
+// 获取订单列表
+export function getOrderList () {
+    const userId = AV.User.current().id
+    let orderList = localStorage.getItem('order-' + userId)
+    orderList = orderList ? JSON.parse(orderList) : []
+    return orderList
+}
+
+// 获取订单详情
+export function getOrder (id) {
+    const orderList = getOrderList()
+    const order = orderList.filter(i => Number(id) === i.orderId)
+    return order[0]
 }

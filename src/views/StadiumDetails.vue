@@ -24,7 +24,7 @@
             <div class="time-list">
                 <div v-for="(item, index) in timeList" :key="index" class="item">
                     <p class="time">{{ item.time }}<br>周{{ item.day }}</p>
-                    <router-link :to="`/venue-site?time=${item.time}&day=${item.day}&type=${type}`" class="button">预定</router-link>
+                    <router-link :to="`/venue-site?time=${item.time}&day=${item.day}`" class="button">预定</router-link>
                 </div>
             </div>
         </div>

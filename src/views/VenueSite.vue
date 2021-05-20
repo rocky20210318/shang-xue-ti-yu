@@ -2,7 +2,7 @@
     <div id="venue-site">
         <van-nav-bar fixed left-arrow @click-left="$router.go(-1)" placeholder title="场地预定" />
         <div class="day-list">
-            <div v-for="(item, index) in dayList" :key="index" :class="['item', {'active': item.day === activeDay}]" @click="clickTime(item.day)">
+            <div v-for="(item, index) in dayList" :key="index" :class="['item', {'active': item.time === activeTime}]" @click="clickTime(item.day)">
                 <p class="week">周{{ item.day }}</p>
                 <p class="day">{{ item.time }}</p>
             </div>
@@ -47,7 +47,7 @@
                 </van-row>
                 <van-row type="flex" justify="space-between" align="center" class="order">
                     <p class="amount"><span>￥</span>{{ total }}</p>
-                    <Button type="primary" hairline round color="#355AAF" class="button">预定场地</Button>
+                    <Button type="primary" hairline round :loading="isButtinLoading" loading-text="订单生成中..." color="#355AAF" class="button" @click="addOrder">预定场地</Button>
                 </van-row>
             </template>
         </div>
@@ -57,7 +57,7 @@
 <script>
 // import { getVenueList } from './services'
 import typeList from '../json/sports-category'
-import { getDateStr, getStadiumDetails } from '../services'
+import { getDateStr, getStadiumDetails, addOrder } from '../services'
 import { Button } from 'vant'
 
 export default {
@@ -67,12 +67,12 @@ export default {
     },
     data () {
         return {
-            activeDay: this.$route.query.day,
-            type: Number(this.$route.query.type),
+            isButtinLoading: false,
+            activeTime: this.$route.query.time,
+            // type: Number(this.$route.query.type),
             dayList: getDateStr(),
             details: getStadiumDetails(),
             typeList: typeList,
-            // activeList: [],
             listData: [],
             timeList: ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00']
         }
@@ -94,6 +94,9 @@ export default {
         },
         total () {
             return this.details.price * this.activeList.length
+        },
+        type () {
+            return Number(this.details.category_id)
         }
     },
     async created () {
@@ -102,6 +105,7 @@ export default {
     mounted () {
     },
     methods: {
+        // 获取场地列表
         getListData () {
             const listData = []
             const list = typeList.filter(i => i.value === this.type)
@@ -125,15 +129,13 @@ export default {
             // console.log(listData)
             return listData
         },
+        // 切换日期
         clickTime (data) {
             this.activeDay = data
             this.listData = this.getListData()
         },
+        // 选中场地
         clickBookList (text, data) {
-            // const list = {
-            //     venue: text,
-            //     time: data.time
-            // }
             const status = data.status
             if (this.activeList.length >= 4 && status === 0) {
                 this.$toast('一次最多选择4场地或时段')
@@ -150,6 +152,32 @@ export default {
                 break
             }
             // return list
+        },
+        // 创建订单
+        addOrder () {
+            this.isButtinLoading = true
+            const date = new Date()
+            const orderId = date.getTime()
+            const data = {
+                orderId,
+                createdAt: date,
+                orderAt: this.activeTime,
+                activeList: this.activeList,
+                status: 0,
+                ...this.details
+            }
+            addOrder(data)
+            this.$toast.loading({
+                message: '订单生成中',
+                forbidClick: true,
+                duration: 1500,
+                onClose: () => {
+                    this.isButtinLoading = false
+                    this.$router.replace(`/order-details/${orderId}`)
+                }
+            })
+            console.log(data)
+            // addOrder()
         }
     }
 }
