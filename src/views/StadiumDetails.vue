@@ -1,6 +1,10 @@
 <template>
     <div id="stadium-details">
-        <van-nav-bar fixed left-arrow @click-left="$router.go(-1)" :border="false" title="" />
+        <van-nav-bar fixed left-arrow @click-left="$router.go(-1)" :border="false">
+            <template #right>
+                <Star :details="details" />
+            </template>
+        </van-nav-bar>
         <div class="img-bg"><van-image width="100%" height="100%" fit="cover" lazy-load :src="details.image_url" /></div>
         <div class="title-data">
             <p class="title">{{ details.name }}</p>
@@ -10,14 +14,14 @@
             <div class="tag"><span v-for="text in details.tabs" :key="text">{{ text }}</span></div>
         </div>
         <van-row type="flex" align="center" class="address-data">
-            <div class="left">
+            <router-link to="/map" class="left">
                 <van-row type="flex" align="center" class="title">
                     <img src="../assets/address.png" class="address-img">
                     <p class="">场馆地址</p>
                 </van-row>
                 <p class="address-text van-ellipsis">{{ details.address }}</p>
-            </div>
-            <div class="dianhua"><img src="../assets/dianhua.png" ></div>
+            </router-link>
+            <div class="dianhua" @click="dial"><img src="../assets/dianhua.png" ></div>
         </van-row>
         <div class="time-data">
             <p class="title">场地预定</p>
@@ -46,18 +50,24 @@
                 <Empty v-else description="暂无评论" />
             </div>
         </div>
+        <div class="footer">
+            <Button block color="linear-gradient(147deg, #FF9313 0%, #FF6600 100%)" round @click="comment">评论</Button>
+        </div>
     </div>
 </template>
 
 <script>
+import Star from '../components/favorites'
 import { getStadiumDetails, getDateStr } from '../services'
-import { Rate, Empty } from 'vant'
+import { Rate, Empty, Button, Dialog } from 'vant'
 
 export default {
     name: 'stadium-details',
     components: {
         Rate,
-        Empty
+        Empty,
+        Star,
+        Button
     },
     data () {
         return {
@@ -74,6 +84,34 @@ export default {
     mounted () {
     },
     methods: {
+        comment () {
+            Dialog.alert({
+                title: '提示',
+                message: '在本运动馆具有消费记录后既可评论'
+            })
+        },
+        dial () {
+            const phone = this.details.telephone
+            if (window.plus) {
+                const plus = window.plus
+                // 导入Activity、Intent类
+                const Intent = plus.android.importClass('android.content.Intent')
+                const Uri = plus.android.importClass('android.net.Uri')
+                // 获取主Activity对象的实例
+                const main = plus.android.runtimeMainActivity()
+                // 创建Intent
+                const uri = Uri.parse('tel:' + phone)
+                const call = new Intent('android.intent.action.CALL', uri)
+                // 调用startActivity方法拨打电话
+                main.startActivity(call)
+            } else {
+                Dialog.alert({
+                    title: '联系电话',
+                    message: phone
+                })
+            }
+        }
+
     }
 }
 </script>
@@ -251,6 +289,9 @@ export default {
             color: #666;
             line-height: 1.5;
         }
+    }
+    .footer {
+        padding: 0 30px 30px;
     }
 }
 </style>

@@ -1,6 +1,6 @@
 import AV from 'leancloud-storage'
 // import request from './request'
-import { api } from '../utils/api'
+// import { api } from '../utils/api'
 // const PHONE_EXP = /^(((13[0-9])|(14[5-7])|(15[0-9])|(17[0-9])|(18[0-9])|(19[0-9]))+\d{8})$/
 
 /**
@@ -26,13 +26,46 @@ export async function signUpOrlogInWithMobilePhone (phoneNumber, smsCode) {
     await AV.User.signUpOrlogInWithMobilePhone(phoneNumber, smsCode)
 }
 
-export async function getVenueList (pageIndex, pageSize, parmas) {
-    const data = await api.get('/getnext', {
-        page: pageIndex,
-        ...parmas
+// export async function getVenueList (pageIndex, pageSize, parmas) {
+//     const data = await api.get('/court/getnext', {
+//         page: pageIndex,
+//         ...parmas
+//     })
+//     return data
+// }
+
+export async function getVenueList (pageIndex, parmas = {}) {
+    const pageSize = 10
+    const venueList = new AV.Query('StadiumList')
+    venueList.skip((pageIndex - 1) * pageSize)
+    venueList.limit(pageSize)
+    if (parmas.category_id) venueList.equalTo('category_id', String(parmas.category_id))
+    if (parmas.keys) venueList.contains('name', String(parmas.keys))
+    switch (parmas.sort) {
+    case 1:
+        venueList.descending('comment_avg')
+        break
+    case 2:
+        venueList.ascending('price')
+        break
+    case 3:
+        venueList.descending('price')
+        break
+    }
+    const list = await venueList.find()
+    return list.map(i => {
+        return {
+            ...i.attributes
+        }
     })
-    return data
 }
+
+// export async function searchApi (keys) {
+//     const data = await api.get('/index/searchApi', {
+//         keys
+//     })
+//     return data
+// }
 
 /**
  * 获取用户信息
@@ -205,10 +238,11 @@ export function addOrder (data) {
 }
 
 // 获取订单列表
-export function getOrderList () {
+export function getOrderList (status) {
     const userId = AV.User.current().id
     let orderList = localStorage.getItem('order-' + userId)
     orderList = orderList ? JSON.parse(orderList) : []
+    if (status || status === 0) orderList = orderList.filter(i => i.status === status)
     return orderList
 }
 
@@ -217,4 +251,45 @@ export function getOrder (id) {
     const orderList = getOrderList()
     const order = orderList.filter(i => Number(id) === i.orderId)
     return order[0]
+}
+
+// 获取收藏列表
+export function getFavoritesList () {
+    const userId = AV.User.current().id
+    let favoritesList = localStorage.getItem('favorites-' + userId)
+    favoritesList = favoritesList ? JSON.parse(favoritesList) : []
+    return favoritesList
+}
+
+// 添加收藏
+export function addFavoritesList (data) {
+    const userId = AV.User.current().id
+    const favoritesList = getFavoritesList()
+    favoritesList.push(data)
+    localStorage.setItem('favorites-' + userId, JSON.stringify(favoritesList))
+}
+
+// 删除收藏
+export function deleteFavoritesList (id) {
+    const userId = AV.User.current().id
+    let favoritesList = getFavoritesList()
+    favoritesList = favoritesList.filter(i => id !== i.view_num)
+    localStorage.setItem('favorites-' + userId, JSON.stringify(favoritesList))
+}
+
+// 判断是否收藏
+export function ifFavoritesList (id) {
+    let favoritesList = getFavoritesList()
+    favoritesList = favoritesList.filter(i => id === i.view_num)
+    return favoritesList.length !== 0
+}
+
+/**
+ * 删除账号
+ * @returns {Promise<User>}
+ */
+export async function deleteAccount () {
+    const userId = AV.User.current().id
+    const user = AV.Object.createWithoutData('_User', userId)
+    user.destroy()
 }

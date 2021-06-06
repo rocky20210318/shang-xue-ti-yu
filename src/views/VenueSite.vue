@@ -176,7 +176,7 @@ export default {
                     this.$router.replace(`/order-details/${orderId}`)
                 }
             })
-            console.log(data)
+            // console.log(data)
             // addOrder()
         }
     }

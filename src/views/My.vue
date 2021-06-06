@@ -7,7 +7,7 @@
             </van-row> -->
             <van-row type="flex" align="center">
                 <div>
-                    <img v-if="!userData.userImage" class="user-img" src="../assets/user-category-avatar.png" alt="">
+                    <img v-if="!userData.userImage" class="user-img" :src="userData.userImage" alt="">
                     <img v-else class="user-img" :src="userData.userImage" alt="">
                 </div>
                 <router-link v-if="!userData.username" class="user-name" to="/login">登陆/注册</router-link>
@@ -27,7 +27,10 @@
         <div><router-link to="/"><img src="" alt=""></router-link></div>
         <CellGroup class="features">
             <!-- <Cell title="地址管理" is-link to="/address-list?switchable=false" /> -->
-            <Cell title="收藏" is-link to="/collect" />
+            <Cell title="我的订单" is-link to="/order-list" />
+            <Cell title="我的收藏" is-link to="/collect" />
+            <Cell title="关注用户" is-link :to="`/watch-list/${userId}`" />
+            <Cell title="消息" is-link to="/message-list" />
             <Cell title="联系客服" is-link @click="customer" />
             <Cell title="设置" is-link to="/set" />
         </CellGroup>
@@ -73,7 +76,9 @@ export default {
             const User = AV.Object.createWithoutData('_User', this.userId)
             await User.fetch().then(data => {
                 this.userData = {
-                    username: data.get('username')
+                    username: data.get('username'),
+                    userImage: data.get('userImage'),
+                    remarks: data.get('remarks')
                 }
                 console.log(this.userData)
             })
@@ -86,7 +91,10 @@ export default {
             }, 1.5 * 1000)
         },
         customer () {
-            Dialog({ message: '全国热线：02169281133' })
+            Dialog({
+                title: '提示',
+                message: '客服热线：020-84581103'
+            })
         }
     }
 }

@@ -41,16 +41,15 @@ module.exports = {
         }
         config.plugins = [...config.plugins, ...plugins]
     },
-    // vue.config.js
     devServer: {
         proxy: {
             '/api': {
-            target: 'http://m.quyundong.com/court', //对应自己的接口
-            changeOrigin: true,
-            ws: true,
-            pathRewrite: {
-                '^/api': ''
-            }
+                target: 'http://m.quyundong.com/court', //对应自己的接口
+                changeOrigin: true,
+                ws: true,
+                pathRewrite: {
+                    '^/api': ''
+                }
             }
         }
     }

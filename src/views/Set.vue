@@ -3,17 +3,19 @@
         <van-nav-bar fixed left-arrow @click-left="$router.go(-1)" placeholder title="设置" />
         <cell-group>
             <cell title="问题反馈" to="/feedback" is-link />
-            <cell title="检查更新" @click="Update" is-link />
+            <!-- <cell title="检查更新" @click="Update" is-link /> -->
             <cell title="修改密码" to="/password-reset" is-link />
-            <cell title="用户协议" to="/agreement" is-link />
-            <cell title="隐私政策" to="/privacy" is-link />
+            <!-- <cell title="用户协议" to="/agreement" is-link /> -->
+            <!-- <cell title="隐私政策" to="/privacy" is-link /> -->
+            <cell title="注销账号" @click="showDialog" />
         </cell-group>
         <div class="button"><Button @click="logOut" round block>退出登陆</Button></div>
     </div>
 </template>
 
 <script>
-import { Cell, CellGroup, Button } from 'vant'
+import { Cell, CellGroup, Button, Dialog } from 'vant'
+import { deleteAccount } from '../services'
 import AV from 'leancloud-storage'
 
 export default {
@@ -50,6 +52,19 @@ export default {
             await AV.User.logOut()
             this.$toast('已退出登陆')
             setTimeout(() => this.$router.push('/login'), 2 * 1000)
+        },
+        showDialog () {
+            Dialog.confirm({
+                title: '提示！',
+                message: '删除账号后数据无法恢复，是否确认删除'
+            }).then(() => {
+                deleteAccount().then(() => {
+                    this.$toast('账号已删除')
+                    setTimeout(() => {
+                        this.logOut()
+                    }, 1000)
+                })
+            })
         }
     }
 }

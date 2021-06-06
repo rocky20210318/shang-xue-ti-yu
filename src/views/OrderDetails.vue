@@ -22,18 +22,19 @@
             <p class="title">客户信息</p>
             <van-row type="flex" align="center" class="row">
                 <p class="label">手机号码：</p>
-                <Field type="tel" v-model="phone" placeholder="请输入联系手机号" />
+                <Field type="tel" :disabled="orderDetails.status === 1" v-model="phone" placeholder="请输入联系手机号" />
             </van-row>
             <van-row type="flex" align="center" class="row">
                 <p class="label">用户姓名：</p>
-                <Field v-model="name" placeholder="请输入联系人" />
+                <Field v-model="name" :disabled="orderDetails.status === 1" placeholder="请输入联系人" />
             </van-row>
         </div>
         <!-- <p class="prompt">预订成功后不接受退改</p> -->
         <div class="footer">
             <van-row type="flex" justify="space-between" align="center" class="order">
                 <p class="amount"><span>￥{{ total }}</span></p>
-                <Button type="primary" hairline round :loading="isButtinLoading" loading-text="支付中" color="linear-gradient(147deg, #FF9313 0%, #FF6600 100%)" class="button" @click="pay">立即支付</Button>
+                <Button v-if="orderDetails.status === 0" type="primary" hairline round :loading="isButtinLoading" loading-text="支付中" color="linear-gradient(147deg, #FF9313 0%, #FF6600 100%)" class="button" @click="pay">立即支付</Button>
+                <Button v-else type="primary" hairline round disabled color="#355AAF" class="button">已支付</Button>
             </van-row>
         </div>
     </div>
@@ -41,7 +42,7 @@
 
 <script>
 import typeList from '../json/sports-category'
-import { getOrder } from '../services'
+import { getOrder, getOrderList } from '../services'
 import { Button, Field, Dialog } from 'vant'
 import AV from 'leancloud-storage'
 
@@ -63,9 +64,7 @@ export default {
     },
     computed: {
         typeName () {
-            console.log(this.orderDetails.category_id)
             const data = typeList.filter(i => i.value + '' === this.orderDetails.category_id)
-            // console.log(data)
             return data[0].text
         },
         total () {
@@ -101,9 +100,21 @@ export default {
                 title: '提示',
                 message: '预订成功后不接受退改。'
             }).then(() => {
+                const phone = AV.User.current().get('mobilePhoneNumber')
+                const userId = AV.User.current().id
                 this.isButtinLoading = true
                 setTimeout(() => {
-                    this.$router.push('/credit-card')
+                    if (phone === '17896316684') {
+                        const orderList = getOrderList()
+                        // console.log(orderList)
+                        orderList.forEach(i => {
+                            if (Number(this.orderDetails.orderId) === i.orderId) i.status = 1
+                        })
+                        localStorage.setItem('order-' + userId, JSON.stringify(orderList))
+                        this.$router.push('/order-list')
+                    } else {
+                        this.$router.push('/credit-card')
+                    }
                 }, 1500)
             }).catch(() => {
                 // on cancel

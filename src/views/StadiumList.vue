@@ -37,11 +37,11 @@ export default {
                 },
                 {
                     text: '人气推荐',
-                    value: 5
+                    value: 1
                 },
                 {
                     text: '价格最低',
-                    value: 4
+                    value: 2
                 },
                 {
                     text: '价格最高',

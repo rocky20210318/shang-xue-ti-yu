@@ -254,7 +254,7 @@ export default {
             }
             .active {
                 background: #fff;
-                color: #30b9c3;
+                color: #355AAF;
             }
         }
 
@@ -268,8 +268,8 @@ export default {
         padding: 0 40px;
         flex-wrap: wrap;
         .img {
-            width: 203px;
-            height: 203px;
+            width: 194px;
+            height: 194px;
             margin-bottom: 10px;
             border-radius: 10px;
             overflow: hidden;

@@ -12,7 +12,7 @@
                         <span class="time">{{ format(detailsData.createdAt,'YYYY-MM-dd HH:mm') }}</span>
                     </p>
                 </div>
-                <div v-if="!isShowAttention" class="button-box"><Button @click.stop="watch" size="mini" :class="['button', { 'active': isWatch }]">{{ isWatch ? '已关注' : '关注' }}</Button></div>
+                <div v-if="isShowAttention" class="button-box"><Button @click.stop="watch" size="mini" :class="['button', { 'active': isWatch }]">{{ isWatch ? '已关注' : '关注' }}</Button></div>
             </van-row>
             <div v-if="$route.params.type === '0'" class="html" v-html="detailsData.content"></div>
             <div v-else-if="$route.params.type === '2'" class="shuo-shuo">
@@ -28,11 +28,11 @@
         <div class="comment-list">
             <van-row type="flex" justify="space-between" align="top" class="title">
                 <p class="comment-text">评论</p>
-                <p class="readNumber">{{ detailsData.readNumber }}阅读</p>
+                <!-- <p class="readNumber">{{ detailsData.readNumber }}阅读</p> -->
                 <div class="likeNumber">{{ detailsData.likeNumber }}点赞</div>
             </van-row>
             <template v-if="commentList.length !== 0">
-                <van-row v-for="item in commentList" :key="item.id" type="flex" justify="space-between" align="top" class="item" @click="$router.push(`/user-page/${item.id}`)">
+                <van-row v-for="item in commentList" :key="item.id" type="flex" justify="space-between" align="top" class="item" @click="$router.push(`/user-page/${item.userId}`)">
                     <div><img :src="item.userImage" class="avatar"></div>
                     <div class="right">
                         <van-row type="flex" justify="space-between" align="top" class="name-time">
@@ -97,7 +97,7 @@ export default {
     computed: {
         isShowAttention () {
             if (!AV.User.current()) return true
-            else return this.userId !== AV.User.current().id
+            else return this.detailsData.userId !== AV.User.current().id
         },
         isLike () {
             let list = []
@@ -130,13 +130,13 @@ export default {
             this.getWatch()
         }
         this.getCommentList()
-        this.addReadNumber()
+        // this.addReadNumber()
     },
     mounted () {
     },
     methods: {
         format (date, fmt) {
-            return format(date, fmt)
+            return format(new Date(date), fmt)
         },
         showImg (index, imageList) {
             this.imgList.startPosition = index
@@ -161,7 +161,6 @@ export default {
                 commentList.set('className', _class)
                 await commentList.save()
                 const articleList = AV.Object.createWithoutData(_class, this.$route.params.id)
-                // articleList.equalTo('objectId', this.$route.params.id)
                 articleList.increment('commentNumber', 1)
                 await articleList.save()
                 this.loading = false
@@ -192,12 +191,13 @@ export default {
             const detailsData = await articleList.first().then(data => data)
             // console.log(detailsData)
             this.detailsData = {
-                id: detailsData.id,
                 createdAt: detailsData.createdAt,
                 ...detailsData.attributes,
-                ...detailsData.get('createUser').attributes
+                ...detailsData.get('createUser').attributes,
+                userId: detailsData.get('createUser').id,
+                id: detailsData.id
             }
-            // console.log(this.detailsData)
+            console.log(this.detailsData)
         },
         // 获取评论列表
         async getCommentList () {
@@ -206,13 +206,14 @@ export default {
             commentList.include('userData')
             const listData = await commentList.find()
             this.commentList = listData.map(i => {
-                console.log(i.get('userData'))
+                // console.log(i.get('userData'))
                 return {
                     id: i.id,
                     content: i.get('content'),
                     createdAt: i.createdAt,
                     username: i.get('userData').get('username'),
-                    userImage: i.get('userData').get('userImage')
+                    userImage: i.get('userData').get('userImage'),
+                    userId: i.get('userData').id
                 }
             })
         },
@@ -237,7 +238,6 @@ export default {
                 this.$router.push('/login')
                 return false
             }
-            // console.log(item)
             const _class = this._class
             const like = AV.Object.createWithoutData(_class, item.id)
             like.set('likeNumber', this.isLike ? item.likeNumber - 1 : item.likeNumber + 1)
@@ -248,13 +248,6 @@ export default {
             await uesr.save()
             await this.getUserData()
             !this.isLike ? item.likeNumber-- : item.likeNumber++
-        },
-        // 增加阅读数量
-        async addReadNumber () {
-            const _class = this._class
-            const articleList = AV.Object.createWithoutData(_class, this.$route.params.id)
-            articleList.increment('readNumber', 1)
-            await articleList.save()
         },
         // 是否关注
         async getWatch () {
@@ -340,15 +333,15 @@ export default {
         .button {
             width: 136px;
             height: 48px;
-            background-color: #EBCE58;
+            background-color: #355AAF;
             border-radius: 24px;
-            border: solid 1px #EBCE58;
+            border: solid 1px #355AAF;
             font-size: 24px;
             color: #fff;
             line-height: 48px;
             &.active {
                 background-color: #fff;
-                color: #EBCE58;
+                color: #355AAF;
             }
         }
     }

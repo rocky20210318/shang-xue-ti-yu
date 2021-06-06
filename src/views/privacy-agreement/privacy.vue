@@ -52,10 +52,7 @@
                 <p>在任何情况下用户因使用或不能使用本软件所产生的直接、间接、偶然、特殊及后续的损害及风险，我方及合作方不承担任何责任。</p>
                 <p>因技术故障等不可抗事件影响到服务的正常运行的，我方及合作方承诺在第一时间内与相关单位配合，及时处理进行修复，但用户因此而遭受的一切损失，我方及合作方不承担责任。</p>
                 <p>用户通过软件与其他用户联系，因受误导或欺骗而导致或可能导致的任何心理、生理上的伤害以及经济上的损失，由过错方依法承担所有责任，一概与我方及合作方无关。</p>
-                <p>公司名： 西安四季云购网络科技有限公司</p>
-                <p>注册地址：陕西省西安市沣东新城沣东大道（东段）2196号自贸新天地创星社C2171</p>
-                <p>常用办公地址：陕西省西安市沣东新城沣东大道（东段）2196号自贸新天地创星社C2171</p>
-                <p>联系电话：13147666905</p>
+                <p class="title">济南大一络网络科技有限公司</p>
             </div>
         </div>
     </div>
@@ -77,64 +74,41 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-h1 {
-  text-align: center;
-  font-size: 32px;
-  margin-bottom: 20px;
+#privacy {
+    padding: 20px;
+    line-height: 1.5;
+    font-size: 0.17333rem;
+    color: #454545;
+    // background: #fff;
+    p {
+        margin-bottom: 0.06667rem;
+    }
+    .title {
+        margin-top: 20px;
+        text-align: right;
+    }
 }
-// #privacy {
-//   position: fixed;
-//   left: 0;
-//   top: 0;
-//   z-index: 9999;
-//   width: 100%;
-//   height: 100%;
-//   // background: rgba(0, 0, 0, 0.7)
-// }
+h1 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 20px;
+}
 .box {
   // position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  // width: 95%;
-  height: 85%;
-  margin: auto;
-  border-radius: 5px;
-  // padding: 20px;
-  background: #fff;
-  overflow: auto;
-  .text {
-    padding: 20px;
-    // height: 90%;
-    overflow: auto;
-  }
-}
-.button {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  background: #fff;
-  border-top: 1px solid #e6e6e6;
-  font-size: 32px;
-  text-align: center;
-  &::after {
-    content: ' ';
-    display: block;
-    position: absolute;
-    width: 1px;
-    height: 100%;
-    left: 0;
-    right: 0;
     top: 0;
     bottom: 0;
+    right: 0;
+    left: 0;
+    // width: 95%;
+    height: 85%;
     margin: auto;
-    background: #e6e6e6;
-  }
-  > div {
-    flex: 1 1;
-    height: 80px;
-    line-height: 80px;
-  }
+    border-radius: 5px;
+    // padding: 20px;
+    overflow: auto;
+    .text {
+        padding: 20px;
+        // height: 90%;
+        overflow: auto;
+    }
 }
 </style>

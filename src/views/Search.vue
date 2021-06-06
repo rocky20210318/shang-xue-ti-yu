@@ -92,7 +92,7 @@ export default {
 </style>
 <style lang="scss" scoped>
 .search {
-    // background: #EBCE58;
+    // background: #FF6600;
 }
 .tab {
 }

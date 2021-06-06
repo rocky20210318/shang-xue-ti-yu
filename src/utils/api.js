@@ -2,6 +2,8 @@ import axios from 'axios'
 import { Toast } from 'vant'
 const qs = require('qs')
 const instance = axios.create({
+    // baseURL: 'http://60.205.186.43:5000'
+    // baseURL: 'http://localhost:5000'
     baseURL: '/api'
 })
 const api = {

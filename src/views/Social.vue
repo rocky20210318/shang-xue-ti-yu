@@ -6,12 +6,12 @@
                 <Search v-model="keys" shape="round" class="search" @click="$router.push('/search')" />
                 <router-link to="/publish-talk"><img src="../assets/bianji.png" alt=""></router-link>
             </van-row>
-            <van-row type="flex" align="center" class="tag">
+            <div class="tag">
                 <router-link to="/search?keys=篮球"><img src="../assets/lanqiu.png" alt=""></router-link>
                 <router-link to="/search?keys=足球"><img src="../assets/zuqiu.png" alt=""></router-link>
                 <router-link to="/search?keys=羽毛球"><img src="../assets/yumaoqiu.png" alt=""></router-link>
                 <router-link to="/search?keys=乒乓球"><img src="../assets/pingpangqiu.png" alt=""></router-link>
-            </van-row>
+            </div>
         </div>
         <Tabs v-model="active" color="#355AAF" class="list">
             <Tab title="推荐">
@@ -104,8 +104,10 @@ export default {
     .tag {
         padding: 36px 0px;
         overflow: auto;
+        white-space: nowrap;
         // width: 120px;
         a {
+            display: inline-block;
             margin-right: 24px;
         }
         img{
@@ -113,7 +115,6 @@ export default {
         }
     }
     .list {
-        // padding: 0 32px;
     }
 }
 </style>

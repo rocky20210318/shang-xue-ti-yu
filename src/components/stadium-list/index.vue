@@ -11,7 +11,7 @@
                 <template v-if="listData.lenght !== 0">
                     <!-- <router-link v-for="item in listData" :key="item.id" :to="`/stadium-details/${item.view_num}`" class="item"> -->
                     <van-row v-for="item in listData" :key="item.id" type="flex" align="center" class="item" @click="jump(item)">
-                        <div class="img"><van-image width="100%" height="100%" fit="cover" lazy-load :src="item.image_url" /></div>
+                        <div class="img"><van-image width="120%" height="120%" fit="cover" lazy-load :src="item.image_url" /></div>
                         <div class="rigth">
                             <p class="title van-ellipsis">{{ item.name }}</p>
                             <div class="rate"><Rate color="#F5A848" readonly void-icon="star" void-color="#C3C3C3" size="0.4rem" v-model="item.comment_avg" /></div>
@@ -46,6 +46,10 @@ export default {
         params: {
             type: Object,
             default: () => {}
+        },
+        listLength: {
+            type: Number,
+            default: 0
         }
     },
     data () {
@@ -69,10 +73,8 @@ export default {
             // console.log(1)
             this.pageIndex++
             const listData = await this.getList(this.pageIndex, this.pageSize)
-            if (listData.length === 0) this.finished = true
-            else {
-                this.listData.push.apply(this.listData, listData)
-            }
+            if (listData.length === 0 || this.listLength !== 0) this.finished = true
+            this.listData.push.apply(this.listData, listData)
             this.isLoading = false
             // console.log(this.listData[0])
         },
@@ -85,13 +87,14 @@ export default {
             this.isRefreshLoading = false
         },
         async getList (pageIndex, pageSize) {
-            const data = await getVenueList(pageIndex, pageSize, this.params)
+            let data = ''
+            data = await getVenueList(pageIndex, this.params)
             // console.log(data)
-            data.businesses.forEach(i => {
+            data.forEach(i => {
                 i.comment_avg = Math.round(i.comment_avg)
                 i.tabs = i.tab.replace('+', ',').replace('、', ',').split(',', 3)
             })
-            return data.businesses
+            return data
         },
         jump (item) {
             // console.log(item)
@@ -157,10 +160,11 @@ export default {
     .outer1 {
         // z-index: 166;
         position: absolute;
-        left: 0;
+        left: -2px;
         top: 0;
         width: 47px;
         height: 34px;
+        padding: 10px 0;
         background-color: rgba(53, 90, 175, 1);
     }
 

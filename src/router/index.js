@@ -29,6 +29,11 @@ const routes = [
         component: () => import('../views/StadiumDetails.vue')
     },
     {
+        path: '/map',
+        name: 'BaiDuMap',
+        component: () => import('../views/BaiDuMap.vue')
+    },
+    {
         path: '/rule',
         name: 'Rule',
         component: () => import('../views/Rule.vue')
@@ -62,6 +67,18 @@ const routes = [
         beforeEnter: authFilter
     },
     {
+        path: '/message-list',
+        name: 'MessageList',
+        component: () => import('../views/MessageList.vue'),
+        beforeEnter: authFilter
+    },
+    {
+        path: '/Collect',
+        name: 'collect',
+        component: () => import('../views/Collect.vue'),
+        beforeEnter: authFilter
+    },
+    {
         path: '/password-reset',
         name: 'PasswordReset',
         component: () => import('../views/PasswordReset.vue')
@@ -75,6 +92,26 @@ const routes = [
         path: '/search',
         name: 'Search',
         component: () => import('../views/Search.vue')
+    },
+    {
+        path: '/search-stadium',
+        name: 'SearchStadium',
+        component: () => import('../views/SearchStadium.vue')
+    },
+    {
+        path: '/user-page/:id',
+        name: 'UserPage',
+        component: () => import('../views/UserPage.vue')
+    },
+    {
+        path: '/watch-list/:id',
+        name: 'WatchList',
+        component: () => import('../views/WatchList.vue')
+    },
+    {
+        path: '/followed-list/:id',
+        name: 'FollowedList',
+        component: () => import('../views/FollowedList.vue')
     },
     {
         path: '/details/:type/:id',
@@ -113,6 +150,16 @@ const routes = [
         name: 'Set',
         component: () => import('../views/Set.vue'),
         beforeEnter: authFilter
+    },
+    {
+        path: '/privacy',
+        name: 'privacy',
+        component: () => import('../views/privacy-agreement/privacy.vue')
+    },
+    {
+        path: '/agreement',
+        name: 'agreement',
+        component: () => import('../views/privacy-agreement/agreement.vue')
     }
 ]
 
